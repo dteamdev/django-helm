@@ -1,0 +1,98 @@
+# Default values for django.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+name: django
+replicaCount: 1
+
+app:
+  name: django
+  hook:
+    create: true
+    command: '["sh", "./docker/django/migrate.sh"]'
+  image:
+    repository: django
+    pullPolicy: Always
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: ""
+
+  serviceAccountName: django-serviceaccount
+  useConfigMap: true
+  useSecretConfig: true
+  configMap:
+    create: true
+    annotations: {}
+    data: {}
+    name: django-configMap
+
+  secretConfig:
+    create: true
+    annotations: {}
+    data: {}
+    name: django-secretConfig
+
+  priorityClassName: ""
+
+nginx:
+  serviceAccountName: django-serviceaccount
+  name: nginx
+  image:
+    repository: nginx
+    pullPolicy: Always
+    # Overrides the image tag whose default is the chart appVersion.
+    tag: ""
+
+  priorityClassName: ""
+
+imagePullSecrets:
+  name: django-imagePullSecrets
+  create: true
+  annotations: {}
+  dockerconfigjson: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: django-serviceaccount
+
+ingress:
+  enabled: false
+  annotations:
+    # kubernetes.io/ingress.class: nginx
+     kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chart-example.local
+      paths: []
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+
+celery:
+  enabled: false
+  service:
+    enabled: false
+
+celery-beat:
+  enabled: false
+  service:
+    enabled: false
+
+redis:
+  enabled: true
+
+  cluster:
+    enabled: false
+
+  persistence:
+    enabled: false
+
+  master:
+    persistence:
+      enabled: false
+
+  usePassword: false

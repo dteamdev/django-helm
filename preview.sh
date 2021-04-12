@@ -1,0 +1,1 @@
+rm result/ -rf && helm template --dry-run internal --debug . --namespace internal | ./helm-fan-out.sh result
