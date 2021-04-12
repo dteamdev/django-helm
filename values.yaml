@@ -1,54 +1,80 @@
-# Default values for django.
+# Default values for django-helm.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-name: django
-replicaCount: 1
 
-app:
-  name: django
-  hook:
-    create: true
-    command: '["sh", "./docker/django/migrate.sh"]'
-  image:
-    repository: django
-    pullPolicy: Always
-    # Overrides the image tag whose default is the chart appVersion.
-    tag: ""
+deployment:
+  command: ""
 
-  serviceAccountName: django-serviceaccount
-  useConfigMap: true
-  useSecretConfig: true
-  configMap:
-    create: true
-    annotations: {}
-    data: {}
-    name: django-configMap
+  livenessProbe: {}
+  readinessProbe: {}
 
-  secretConfig:
-    create: true
-    annotations: {}
-    data: {}
-    name: django-secretConfig
+  ports:
+    - name: http
+      containerPort: 80
+      protocol: TCP
 
-  priorityClassName: ""
+  resources: {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
 
-nginx:
-  serviceAccountName: django-serviceaccount
-  name: nginx
   image:
     repository: nginx
-    pullPolicy: Always
+    pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
     tag: ""
 
-  priorityClassName: ""
+  podAnnotations: {}
+
+  podSecurityContext: {}
+    # fsGroup: 2000
+
+  securityContext: {}
+    # capabilities:
+    #   drop:
+    #   - ALL
+    # readOnlyRootFilesystem: true
+    # runAsNonRoot: true
+    # runAsUser: 1000
+
+  nodeSelector: {}
+
+  tolerations: []
+
+  affinity: {}
+
+replicaCount: 1
+
+configMap:
+  create: false
+  name: ""
+  annotations: {}
+  data: []
+
+secretConfig:
+  create: false
+  name: ""
+  annotations: {}
+  data: []
 
 imagePullSecrets:
-  name: django-imagePullSecrets
-  create: true
+  create: false
+  # The name of the imagePullSecrets to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
   annotations: {}
   dockerconfigjson: ""
+
+nameOverride: ""
+fullnameOverride: ""
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -57,13 +83,23 @@ serviceAccount:
   annotations: {}
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
-  name: django-serviceaccount
+  name: ""
+
+
+
+service:
+  type: ClusterIP
+  ports:
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
 
 ingress:
   enabled: false
-  annotations:
+  annotations: {}
     # kubernetes.io/ingress.class: nginx
-     kubernetes.io/tls-acme: "true"
+    # kubernetes.io/tls-acme: "true"
   hosts:
     - host: chart-example.local
       paths: []
@@ -72,27 +108,9 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
-celery:
+autoscaling:
   enabled: false
-  service:
-    enabled: false
-
-celery-beat:
-  enabled: false
-  service:
-    enabled: false
-
-redis:
-  enabled: true
-
-  cluster:
-    enabled: false
-
-  persistence:
-    enabled: false
-
-  master:
-    persistence:
-      enabled: false
-
-  usePassword: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  # targetMemoryUtilizationPercentage: 80
