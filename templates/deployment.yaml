@@ -22,7 +22,7 @@ spec:
     spec:
       {{- if or (.Values.imagePullSecrets.name) (.Values.imagePullSecrets.create) }}
       imagePullSecrets:
-        - {{ include "django-helm.imagePullSecretsName" . }}
+        - name: {{ include "django-helm.imagePullSecretsName" . }}
       {{- end }}
       serviceAccountName: {{ include "django-helm.serviceAccountName" . }}
       securityContext:
@@ -55,11 +55,11 @@ spec:
           envFrom:
             {{- if or (.Values.configMap.name) (.Values.configMap.create)  }}
             - configMapRef:
-                name: {{- include "django-helm.configMapName" . }}
+                name: {{ include "django-helm.configMapName" . }}
             {{- end }}
             {{- if or (.Values.secretConfig.name) (.Values.secretConfig.create) }}
             - secretRef:
-                name: {{- include "django-helm.secretConfigName" . }}
+                name: {{ include "django-helm.secretConfigName" . }}
             {{- end }}
       {{- with .Values.deployment.nodeSelector }}
       nodeSelector:
