@@ -57,13 +57,13 @@ configMap:
   create: false
   name: ""
   annotations: {}
-  data: []
+  data: {}
 
 secretConfig:
   create: false
   name: ""
   annotations: {}
-  data: []
+  data: {}
 
 imagePullSecrets:
   create: false
