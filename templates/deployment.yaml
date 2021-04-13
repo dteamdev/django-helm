@@ -50,7 +50,7 @@ spec:
           {{- end }}
           {{- with .Values.deployment.resources }}
           resources:
-            {{- toYaml . | nindent 12 }}]
+            {{- toYaml . | nindent 12 }}
           {{- end }}
           envFrom:
             {{- if or (.Values.configMap.name) (.Values.configMap.create)  }}
