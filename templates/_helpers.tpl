@@ -65,19 +65,19 @@ Create the name of the service account to use
 Create the name of the imagePullSecretsName to use
 */}}
 {{- define "django-helm.imagePullSecretsName" -}}
-{{- default (printf "%s-imagePullSecrets" (include "django-helm.fullname" .)) .Values.imagePullSecrets.name }}
+{{- default (printf "%s-imagepullsecrets" (include "django-helm.fullname" .)) .Values.imagePullSecrets.name }}
 {{- end }}
 
 {{/*
 Create the name of the configMap to use
 */}}
 {{- define "django-helm.configMapName" -}}
-{{- default (printf "%s-configMap" (include "django-helm.fullname" .)) .Values.configMap.name }}
+{{- default (printf "%s-configmap" (include "django-helm.fullname" .)) .Values.configMap.name }}
 {{- end }}
 
 {{/*
 Create the name of the configMap to use
 */}}
 {{- define "django-helm.secretConfigName" -}}
-{{- default (printf "%s-secretConfig" (include "django-helm.fullname" .)) .Values.secretConfig.name }}
+{{- default (printf "%s-secretconfig" (include "django-helm.fullname" .)) .Values.secretConfig.name }}
 {{- end }}
